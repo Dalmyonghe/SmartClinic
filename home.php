@@ -1,3 +1,28 @@
+<?php
+session_start();
+require_once 'includes/db.php';
+
+$sql = "
+    SELECT 
+        appointments.id,
+        users.full_name AS patient_name,
+        doctors.full_name AS doctor_name,
+        appointments.appointment_date,
+        appointments.appointment_time
+    FROM appointments
+    JOIN users ON appointments.user_id = users.id
+    JOIN doctors ON appointments.doctor_id = doctors.id
+    ORDER BY appointments.appointment_date ASC,
+             appointments.appointment_time ASC
+";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+
+$appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
