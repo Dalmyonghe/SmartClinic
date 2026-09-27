@@ -1,8 +1,3 @@
-body {
-    background-color: rgb(233, 233, 233);
-}
-
-
 * {
     box-sizing: border-box;
 }
@@ -13,47 +8,84 @@ body {
     background-color: #f5f7fb;
 }
 
-
 .appointment-page {
     margin-left: 220px;
     padding: 30px;
 }
 
 .doctor-section {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-
-    background-color: #173f79;
-    color: white;
-
-    padding: 25px;
-    border-radius: 12px;
     margin-bottom: 30px;
 }
 
-.doctor-avatar {
-    width: 65px;
-    height: 65px;
-    border-radius: 50%;
+.doctor-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.doctor-card {
+    display: block;
+    cursor: pointer;
+}
+
+.doctor-card input {
+    position: absolute;
+    opacity: 0;
+}
+
+.doctor-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
     background-color: white;
-    color: #173f79;
+
+    transition: 0.2s;
+}
+
+.doctor-avatar {
+    width: 55px;
+    height: 55px;
+    flex-shrink: 0;
 
     display: flex;
     align-items: center;
     justify-content: center;
+
+    background-color: #e7f0ff;
+    color: #173f79;
+
+    border-radius: 50%;
     font-weight: bold;
 }
 
-.doctor-info h3 {
-    margin: 0 0 10px;
+.doctor-info h4 {
+    margin: 0 0 8px;
+    color: #173f79;
 }
 
 .doctor-info p {
-    margin: 5px 0;
-    font-size: 14px;
+    margin: 4px 0;
+    font-size: 13px;
+    color: #6b7280;
 }
 
+.doctor-info small {
+    color: #6b7280;
+}
+
+.doctor-card input:checked + .doctor-content {
+    border-color: #173f79;
+    background-color: #eef4ff;
+}
+
+.doctor-card input:focus-visible + .doctor-content {
+    outline: 2px solid #173f79;
+    outline-offset: 3px;
+}
 
 .booking-container {
     display: grid;
@@ -61,8 +93,8 @@ body {
     gap: 30px;
 }
 
-
-.time-section, .date-section {
+.time-section,
+.date-section {
     background-color: white;
     padding: 25px;
     border-radius: 12px;
@@ -87,11 +119,11 @@ body {
     display: block;
     text-align: center;
     padding: 12px 5px;
+
     background-color: #f3f4f6;
     border-radius: 6px;
     font-size: 13px;
 }
-
 
 .time-grid input:checked + span {
     background-color: #173f79;
@@ -103,7 +135,6 @@ body {
     outline-offset: 3px;
 }
 
-
 .date-section label {
     display: block;
     margin-bottom: 10px;
@@ -112,11 +143,11 @@ body {
 .date-section input {
     width: 100%;
     padding: 12px;
+
     border: 1px solid #ddd;
     border-radius: 6px;
     font-size: 15px;
 }
-
 
 .booking-actions {
     display: flex;
@@ -143,89 +174,14 @@ body {
 }
 
 
-.doctor-section {
-    margin-bottom: 30px;
-}
-
-.doctor-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-}
-
-.doctor-card {
-    display: block;
-    cursor: pointer;
-}
-
-.doctor-card input {
-    position: absolute;
-    opacity: 0;
-}
-
-.doctor-content {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-
-    padding: 20px;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    background-color: white;
-
-    transition: 0.2s;
-}
-
-.doctor-avatar {
-    width: 55px;
-    height: 55px;
-    flex-shrink: 0;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background-color: #e7f0ff;
-    color: #173f79;
-
-    border-radius: 50%;
-    font-weight: bold;
-}
-
-.doctor-info h4 {
-    margin: 0 0 8px;
-}
-
-.doctor-info p {
-    margin: 4px 0;
-    font-size: 13px;
-    color: #6b7280;
-}
-
-.doctor-info small {
-    color: #6b7280;
-}
-
-.doctor-card input:checked + .doctor-content {
-    border-color: #173f79;
-    background-color: #eef4ff;
-}
-
-.doctor-card input:focus-visible + .doctor-content {
-    outline: 2px solid #173f79;
-    outline-offset: 3px;
-}
-
-@media (max-width: 768px) {
-    .doctor-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
 @media (max-width: 768px) {
     .appointment-page {
         margin-left: 0;
         padding: 15px;
+    }
+
+    .doctor-grid {
+        grid-template-columns: 1fr;
     }
 
     .booking-container {
