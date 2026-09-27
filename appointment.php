@@ -1,3 +1,75 @@
+<?php
+session_start();
+
+require_once "includes/db.php";
+
+$message = "";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    $user_id = $_SESSION["user_id"] ?? null;
+    $doctor_id = filter_input(INPUT_POST, "doctor_id", FILTER_VALIDATE_INT);
+    $date = $_POST["date"] ?? "";
+    $time = $_POST["time"] ?? "";
+
+    $dateObject = DateTimeImmutable::createFromFormat("!Y-m-d", $date);
+    $validDate = $dateObject && $dateObject->format("Y-m-d") === $date;
+
+    $validTimes = ["09:00", "09:15", "09:30", "09:45", "10:00", "10:15"];
+
+    if (!$user_id) {
+        $message = "Please login first.";
+    } elseif (!$doctor_id || !$validDate || !in_array($time, $validTimes, true)) {
+        $message = "Please select a valid doctor, date and time.";
+    } elseif ($date < date("Y-m-d")) {
+        $message = "Please select a future date.";
+    } else {
+
+        $check = $pdo->prepare(
+            "SELECT id FROM doctors WHERE id = ? AND is_active = 1"
+        );
+
+        $check->execute([$doctor_id]);
+
+        if (!$check->fetch()) {
+            $message = "Doctor is unavailable.";
+        } else {
+
+            $sql = "INSERT INTO appointments
+                    (user_id, doctor_id, appointment_date, appointment_time)
+                    VALUES (?, ?, ?, ?)";
+
+            $stmt = $pdo->prepare($sql);
+
+            try {
+                $stmt->execute([
+                    $user_id,
+                    $doctor_id,
+                    $date,
+                    $time
+                ]);
+
+                $message = "Appointment booked successfully!";
+
+            } catch (PDOException $e) {
+                if ($e->getCode() === "23000") {
+                    $message = "This slot is unavailable or the booking data is invalid.";
+                } else {
+                    error_log($e->getMessage());
+                    $message = "Unable to book appointment.";
+                }
+            }
+        }
+    }
+}
+
+$stmt = $pdo->query(
+    "SELECT * FROM doctors WHERE is_active = 1"
+);
+
+$doctors = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +91,6 @@
     <?php endif; ?>
     <form action="appointment.php" method="POST">
 
-        <!-- SECTION 1: DOCTOR -->
         <div class="doctor-section">
 
             <h3>Select Doctor</h3>
