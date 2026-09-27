@@ -1,3 +1,45 @@
+<?php
+session_start();
+
+require_once "includes/db.php";
+
+$error = "";
+
+if (isset($_SESSION["user_id"])) {
+    header("Location: appointment.php");
+    exit;
+}
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    $email = trim($_POST["email"] ?? "");
+    $password = $_POST["password"] ?? "";
+
+    $sql = "SELECT id, email, password_hash
+            FROM users
+            WHERE email = ?";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$email]);
+
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && password_verify($password, $user["password_hash"])) {
+
+        session_regenerate_id(true);
+
+        $_SESSION["user_id"] = (int) $user["id"];
+
+        header("Location: appointment.php");
+        exit;
+
+    } else {
+        $error = "Invalid email or password.";
+    }
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
